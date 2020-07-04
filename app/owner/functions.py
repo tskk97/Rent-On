@@ -1,9 +1,9 @@
-from . import admin
+from . import owner
 from .. import User, db
 import random
 import json
 
 
-@admin.route('/')
+@owner.route('/')
 def home():
-    return 'Admin Home'
+    return 'Owner Home'
