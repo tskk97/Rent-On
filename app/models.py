@@ -19,12 +19,13 @@ class Property(db.Model):
     city = db.Column(db.String(255))
     state = db.Column(db.String(255))
     zip_code = db.Column(db.String(255))
-    created_at = db.Column(db.String(255))
+    created_at = db.Column(db.DateTime(timezone=True))
     area = db.Column(db.Integer)
     number_bedrooms = db.Column(db.Integer)
     amenities = db.Column(db.String(255))
     furnish = db.Column(db.String(255))
     isAvailable = db.Column(db.Integer)
+    owner_id = db.Column(db.Integer, db.ForeignKey('users.id'))
 
 
 class User_Property_Rel(db.Model):

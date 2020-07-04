@@ -1,0 +1,22 @@
+//register
+{
+    "name": "Faheem", 
+    "contact": "9888880000", 
+    "email": "faheem@gmail", 
+    "password":"faheem",
+    "type_of_user": "owner"
+}
+
+// property
+{
+    "address":"H.No 3,Btm 2nd Stage", 
+    "city":"Bangalore", 
+    "state":"Karnataka", 
+    "zip_code":"560065",
+    "area":1800, 
+    "number_bedrooms":3,
+    "amenities":"swimming-pool",
+    "furnish":"fully-furnish",
+    "isAvailable":1,
+    "owner_id": 3
+}

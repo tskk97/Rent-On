@@ -38,7 +38,7 @@ def userRegister():
             contact=contact,
             email=email,
             password=password,
-            type_of_user=type_of_use
+            type_of_user=type_of_user
         )
         db.session.add(user)
         db.session.commit()
