@@ -131,7 +131,7 @@ def property_edit():
             })
         else:
             return json.dumps({
-                "message": "Only owner can delete the Property!",
+                "message": "Only owner can edit the Property!",
             })
     except TypeError:
         return json.dumps({
