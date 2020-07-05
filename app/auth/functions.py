@@ -21,32 +21,34 @@ def userRegister():
     contact = request.json["contact"]
     type_of_user = request.json["type_of_user"]
 
-    flag = False
-
-    results = db.session.execute(''' SELECT email from users ''')
-
-    for result in results:
-        if email == result.email:
-            flag = True
-
-    if flag:
-        return json.dumps({"message": "Email Already Exists!", "error": True})
-
+    if name == '' or email == '' or password == '' or contact == '' or type_of_user == '':
+        return False
     else:
-        user = User(
-            name=name,
-            contact=contact,
-            email=email,
-            password=password,
-            type_of_user=type_of_user
-        )
-        db.session.add(user)
-        db.session.commit()
+        flag = False
+        results = db.session.execute(''' SELECT email from users ''')
 
-        return json.dumps({
-            "message": "Created Account Successfully!",
-            "error": False
-        })
+        for result in results:
+            if email == result.email:
+                flag = True
+
+        if flag:
+            return json.dumps({"message": "Email Already Exists!", "error": True})
+
+        else:
+            user = User(
+                name=name,
+                contact=contact,
+                email=email,
+                password=password,
+                type_of_user=type_of_user
+            )
+            db.session.add(user)
+            db.session.commit()
+
+            return json.dumps({
+                "message": "Created Account Successfully!",
+                "error": False
+            })
 
 
 # User - Login
