@@ -1,5 +1,5 @@
 from . import owner
-from .. import User, db, Property
+from .. import User, db, Property, User_Property_Rel
 import random
 import json
 import time
@@ -145,3 +145,57 @@ def property_edit():
         return json.dumps({
             "message": "Some unknown error occured!",
         })
+
+
+# owner - user requests
+@owner.route("/users/<owner_id>")
+def user_enquiries(owner_id):
+    results = db.session.execute(''' SELECT * FROM property_user_rel WHERE id = "%d" ''' % (int(owner_id)))
+    data = []
+    for result in results:
+        temp_dict = {}
+        temp_dict["user_id"] = result.user_id
+        temp_dict["property_id"] = result.property_id
+        temp_dict["status"] = result.status
+        data.append(temp_dict)
+
+    return json.dumps({"data": data}, default=str)
+
+
+# update request status
+@owner.route("/users/<owner_id>/<property_id>/<status>")
+def update_status(owner_id, property_id, status):
+
+    if status == "accepted":
+        try:
+            obj = User_Property_Rel.query.filter_by(property_id=property_id).first()
+            obj.status = status
+            db.session.commit()
+
+            obj = Property.query.filter_by(id=property_id).first()
+            obj.isAvailable = 0
+            db.session.commit()
+
+            return json.dumps({
+                "message": "Status Updated Successfully!",
+            })
+
+        except:
+            return json.dumps({
+                "message": "Some unknown error occured!",
+            })
+
+    elif status == "rejected":
+        try:
+            obj = User_Property_Rel.query.filter_by(property_id=property_id).first()
+            obj.status = status
+            db.session.commit()
+
+            return json.dumps({
+                "message": "Status Updated Successfully!",
+            })
+
+        except:
+            return json.dumps({
+                "message": "Some unknown error occured!",
+            })
