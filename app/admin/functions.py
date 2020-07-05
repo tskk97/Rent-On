@@ -1,5 +1,6 @@
+from flask import request
 from . import admin
-from .. import User, db
+from .. import User, db, Property, User_Property_Rel
 import random
 import json
 
@@ -15,7 +16,6 @@ def user_edit():
     user_id = int(request.json["user_id"])
     name = request.json["name"]
     email = request.json["email"]
-    password = request.json["password"]
     contact = request.json["contact"]
     type_of_user = request.json["type_of_user"]
 
@@ -25,8 +25,6 @@ def user_edit():
             obj.name = name
             obj.email = email
             obj.contact = contact
-            obj.type_of_user = type_of_user
-            obj.id = user_id
             db.session.commit()
             return json.dumps({
                 "message": "User Updated Successfully!",
@@ -55,7 +53,6 @@ def owner_edit():
     owner_id = int(request.json["owner_id"])
     name = request.json["name"]
     email = request.json["email"]
-    password = request.json["password"]
     contact = request.json["contact"]
     type_of_user = request.json["type_of_user"]
 
@@ -65,8 +62,6 @@ def owner_edit():
             obj.name = name
             obj.email = email
             obj.contact = contact
-            obj.type_of_user = type_of_user
-            obj.id = owner_id
             db.session.commit()
             return json.dumps({
                 "message": "Owner Updated Successfully!",
@@ -137,15 +132,22 @@ def user_delete():
 
     try:
         if type_of_user == 'admin':
-            property_user_rel = User_Property_Rel.query.filter_by(user_id=user_id).first_or_404(description='There is no data with id {}'.format(property_id))
-            db.session.delete(property_user_rel)
-            db.session.commit()
+
+            results = db.session.execute(''' SELECT * from property_user_rel WHERE user_id = "%d" ''' % (user_id))
+
+            for result in results:
+                if user_id == result.user_id:
+                    property_user_rel = User_Property_Rel.query.filter_by(user_id=user_id).first_or_404(description='There is no data with id {}'.format(user_id))
+                    db.session.delete(property_user_rel)
+                    db.session.commit()
+                else:
+                    pass
 
             user = User.query.filter_by(id=user_id).first_or_404(description='There is no data with id {}'.format(user_id))
             db.session.delete(user)
             db.session.commit()
             return json.dumps({
-                "message": "user Deleted Successfully!",
+                "message": "User Deleted Successfully!",
             })
         else:
             return json.dumps({
@@ -173,15 +175,22 @@ def owner_delete():
 
     try:
         if type_of_user == 'admin':
-            property_user_rel = User_Property_Rel.query.filter_by(owner_id=owner_id).first_or_404(description='There is no data with id {}'.format(property_id))
-            db.session.delete(property_user_rel)
-            db.session.commit()
 
-            prop = Property.query.filter_by(owner_id=owner_id).first_or_404(description='There is no data with id {}'.format(property_id))
+            results = db.session.execute(''' SELECT * from property_user_rel WHERE owner_id = "%d" ''' % (owner_id))
+
+            for result in results:
+                if owner_id == result.owner_id:
+                    property_user_rel = User_Property_Rel.query.filter_by(owner_id=owner_id).first_or_404(description='There is no data with id {}'.format(owner_id))
+                    db.session.delete(property_user_rel)
+                    db.session.commit()
+                else:
+                    pass
+
+            prop = Property.query.filter_by(owner_id=owner_id).first_or_404(description='There is no data with id {}'.format(owner_id))
             db.session.delete(prop)
             db.session.commit()
 
-            owner = User.query.filter_by(id=owner_id).first_or_404(description='There is no data with id {}'.format(user_id))
+            owner = User.query.filter_by(id=owner_id).first_or_404(description='There is no data with id {}'.format(owner_id))
             db.session.delete(owner)
             db.session.commit()
             return json.dumps({
@@ -203,4 +212,3 @@ def owner_delete():
         return json.dumps({
             "message": "Some unknown error occured!",
         })
-
