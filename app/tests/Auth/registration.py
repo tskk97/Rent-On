@@ -10,7 +10,7 @@ payload = {
 
 
 class RegistrationTest(unittest.TestCase):
-    def payload_mismatch(self):
+    def test(self):
         self.assertFalse(userRegister(payload))
 
 

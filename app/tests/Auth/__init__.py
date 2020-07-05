@@ -1,1 +1,1 @@
-from .registation import *
+from .registration import *
